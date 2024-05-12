@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BulkyBook.Controllers
 {
-    public class CategoryController(ICategoryRepository db) : Controller
+    public class CategoryController(IUnitOfWork db) : Controller
     {
-        private readonly ICategoryRepository _categoryRepo = db;
+        private readonly IUnitOfWork _unitOfWork = db;
 
         public IActionResult Index()
         {
-            List<Category> categories = _categoryRepo.GetAll().ToList();
+            List<Category> categories = _unitOfWork.Category.GetAll().ToList();
             
             return View(categories);
         }
@@ -31,8 +31,8 @@ namespace BulkyBook.Controllers
 
             if (ModelState.IsValid)
             {
-                _categoryRepo.Add(category);
-                _categoryRepo.Save();
+                _unitOfWork.Category.Add(category);
+                _unitOfWork.Save();
 
                 TempData["success"] = "Category created successfully";
 
@@ -50,7 +50,7 @@ namespace BulkyBook.Controllers
             }
 
             //Category? category = _db.Categories.Find(id);
-            Category? category = _categoryRepo.Get(c => c.Id == id);
+            Category? category = _unitOfWork.Category.Get(c => c.Id == id);
             //Category? category = _db.Categories.Where(c => c.Id == id).FirstOrDefault();
 
             return View(category);
@@ -61,8 +61,8 @@ namespace BulkyBook.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryRepo.Update(category);
-                _categoryRepo.Save();
+                _unitOfWork.Category.Update(category);
+                _unitOfWork.Save();
 
                 TempData["success"] = "Category updated successfully";
 
@@ -79,7 +79,7 @@ namespace BulkyBook.Controllers
                 return NotFound();
             }
 
-            Category? category = _categoryRepo.Get(c => c.Id == id);
+            Category? category = _unitOfWork.Category.Get(c => c.Id == id);
 
             return View(category);
         }
@@ -87,15 +87,15 @@ namespace BulkyBook.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Category? category = _categoryRepo.Get(c => c.Id == id);
+            Category? category = _unitOfWork.Category.Get(c => c.Id == id);
 
             if (category == null)
             {
                 return NotFound();
             }
 
-            _categoryRepo.Remove(category);
-            _categoryRepo.Save();
+            _unitOfWork.Category.Remove(category);
+            _unitOfWork.Save();
 
             TempData["success"] = "Category deleted successfully";
 
