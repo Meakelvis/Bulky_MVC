@@ -1,6 +1,7 @@
 ﻿using BulkyBook.DataAccess.Data;
 using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models;
+using BulkyBook.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BulkyBookWeb.Areas.Admin.Controllers
@@ -51,7 +52,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             }
 
             //Category? category = _db.Categories.Find(id);
-            Category? category = _unitOfWork.Category.Get(c => c.Id == id);
+            Category? category = _unitOfWork.Category.Get(id);
             //Category? category = _db.Categories.Where(c => c.Id == id).FirstOrDefault();
 
             return View(category);
@@ -80,7 +81,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            Category? category = _unitOfWork.Category.Get(c => c.Id == id);
+            Category? category = _unitOfWork.Category.Get(id);
 
             return View(category);
         }
@@ -88,7 +89,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Category? category = _unitOfWork.Category.Get(c => c.Id == id);
+            Category? category = _unitOfWork.Category.Get(id);
 
             if (category == null)
             {

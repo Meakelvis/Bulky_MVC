@@ -28,12 +28,13 @@ namespace BulkyBook.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> filter)
+        public T Get(int? id)
         {
-            IQueryable<T> query = dbSet;
-            query.Where(filter);
+            //IQueryable<T> query = dbSet;
+            //query.Where(filter);
 
-            T result = query.FirstOrDefault();
+            // T result = query.FirstOrDefault();
+            T result = dbSet.Find(id);
 
             if (result == null)
             {

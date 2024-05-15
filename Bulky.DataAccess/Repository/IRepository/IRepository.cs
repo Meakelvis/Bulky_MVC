@@ -11,7 +11,7 @@ namespace BulkyBook.DataAccess.Repository.IRepository
     {
         // T - Category, or anyother data model
         IEnumerable<T> GetAll();
-        T Get(Expression<Func<T, bool>> filter);
+        T Get(int? id);
         void Add(T entity);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
