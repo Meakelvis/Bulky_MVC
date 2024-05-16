@@ -15,7 +15,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Product> products = _unitOfWork.Product.GetAll().ToList();
+            List<Product> products = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
 
             return View(products);
         }
@@ -110,34 +110,40 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             }
         }
 
-        public IActionResult Delete(int? id)
+        #region
+        [HttpGet]
+        public IActionResult GetAll() 
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
+            List<Product> products = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
 
-            Product? product = _unitOfWork.Product.Get(id);
-
-            return View(product);
+            return Json(new { data = products });
         }
 
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
+        [HttpDelete]
+        public IActionResult Delete(int? id)
         {
-            Product? product = _unitOfWork.Product.Get(id);
+            var product = _unitOfWork.Product.Get(id);
 
             if (product == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error while deleting" });
+            }
+
+            // delete old image
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+            var oldImagePath = Path.Combine(wwwRootPath, product.ImageUrl.TrimStart('\\'));
+
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
             }
 
             _unitOfWork.Product.Remove(product);
             _unitOfWork.Save();
 
-            TempData["success"] = "Product deleted successfully";
-
-            return RedirectToAction("Index", "Product");
+            return Json(new { success = true, message = "Delete Successfull" });
         }
+        #endregion
     }
 }

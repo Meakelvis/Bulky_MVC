@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BulkyBook.DataAccess.Data;
 using BulkyBook.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BulkyBook.DataAccess.Repository
 {
@@ -28,7 +29,7 @@ namespace BulkyBook.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        public T Get(int? id)
+        public T Get(int? id, string? includeProperties = null)
         {
             //IQueryable<T> query = dbSet;
             //query.Where(filter);
@@ -44,9 +45,17 @@ namespace BulkyBook.DataAccess.Repository
             return result;
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
 
             return query.ToList();
         }

@@ -10,8 +10,8 @@ namespace BulkyBook.DataAccess.Repository.IRepository
     public interface IRepository<T> where T : class
     {
         // T - Category, or anyother data model
-        IEnumerable<T> GetAll();
-        T Get(int? id);
+        IEnumerable<T> GetAll(string? includeProperties = null);
+        T Get(int? id, string? includeProperties = null);
         void Add(T entity);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
