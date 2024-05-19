@@ -23,6 +23,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             _logger = logger;
         }
 
+        [Authorize]
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
